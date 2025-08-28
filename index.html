@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Découverte de Bureau - EURIAL Supply Chain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .welcome-screen {
+            display: block;
+        }
+
+        .name-input {
+            margin: 30px 0;
+        }
+
+        .name-input select {
+            width: 100%;
+            padding: 20px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            font-size: 18px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 50px;
+        }
+
+        .name-input select:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 5px rgba(74, 144, 226, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .discover-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .discover-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
+        }
+
+        .discover-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .animation-screen {
+            display: none;
+            padding: 40px 0;
+        }
+
+        .slot-machine {
+            background: #2c3e50;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .slot-display {
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 25px;
+            border-radius: 10px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .spinning {
+            animation: textSpin 0.1s infinite;
+        }
+
+        @keyframes textSpin {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .result-screen {
+            display: none;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.3);
+            transform: scale(0);
+            animation: cardAppear 0.8s ease forwards;
+        }
+
+        @keyframes cardAppear {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.05) rotate(2deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .result-card h2 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .bureau-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .bureau-info h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .bureau-info p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .restart-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .restart-btn:hover {
+            background: white;
+            color: #28a745;
+            transform: translateY(-2px);
+        }
+
+        .loading-text {
+            font-size: 18px;
+            color: #4a90e2;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .dots {
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0%, 20% { color: #4a90e2; }
+            40% { color: #28a745; }
+            60% { color: #ffc107; }
+            80%, 100% { color: #4a90e2; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b6b;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        .confetti:nth-child(2n) { background: #4ecdc4; animation-delay: -0.5s; }
+        .confetti:nth-child(3n) { background: #45b7d1; animation-delay: -1s; }
+        .confetti:nth-child(4n) { background: #96ceb4; animation-delay: -1.5s; }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(720deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Découverte de Bureau</h1>
+            <p>EURIAL Supply Chain - Team Building</p>
+        </div>
+
+        <div class="content">
+            <!-- Écran de bienvenue -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <h2>Bienvenue ! 👋</h2>
+                <p>Sélectionnez votre nom pour découvrir quel bureau vous a été attribué !</p>
+                
+                <div class="name-input">
+                    <select id="nameSelect">
+                        <option value="">-- Sélectionnez votre nom --</option>
+                    </select>
+                </div>
+
+                <button class="discover-btn" id="discoverBtn" onclick="startDiscovery()" disabled>
+                    🚀 Découvrir mon bureau !
+                </button>
+            </div>
+
+            <!-- Écran d'animation -->
+            <div class="animation-screen" id="animationScreen">
+                <h2>🎰 Tirage en cours...</h2>
+                <div class="loading-text">
+                    Attribution de votre bureau<span class="dots">...</span>
+                </div>
+
+                <div class="slot-machine">
+                    <div class="slot-display" id="slotDisplay">
+                        Initialisation...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Écran de résultat -->
+            <div class="result-screen" id="resultScreen">
+                <div class="result-card">
+                    <h2>🎉 Félicitations !</h2>
+                    <div class="bureau-info">
+                        <h3 id="assignedBureau">Bureau assigné</h3>
+                        <p id="assignedService">Service</p>
+                    </div>
+                    <p>Vous allez découvrir un nouvel environnement de travail !</p>
+                    <button class="restart-btn" onclick="restart()">
+                        🔄 Nouvelle recherche
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données des employés
+        const employees = [
+            { name: "Sophie Dupont", service: "Commercial", poste: "Chargée de clientèle" },
+            { name: "Julien Bernard", service: "Commercial", poste: "Chargé de clientèle" },
+            { name: "Clara Lefèvre", service: "Marketing", poste: "Assistant marketing" },
+            { name: "Maxime Petit", service: "Marketing", poste: "Assistant marketing" },
+            { name: "Élodie Moreau", service: "Ressources Humaines", poste: "Gestionnaire RH" },
+            { name: "Thomas Laurent", service: "Ressources Humaines", poste: "Gestionnaire RH" },
+            { name: "Nicolas Garnier", service: "Informatique", poste: "Technicien support" },
+            { name: "Camille Martin", service: "Informatique", poste: "Technicien support" },
+            { name: "Antoine Dubois", service: "Logistique", poste: "Agent logistique" },
+            { name: "Amélie Richard", service: "Logistique", poste: "Agent logistique" }
+        ];
+
+        // Générer les attributions automatiquement
+        let assignments = {};
+        let usedNames = new Set(); // Stocke les noms qui ont déjà joué
+
+        function generateAssignments() {
+            const availableBureaux = [...employees];
+            const shuffledEmployees = [...employees].sort(() => Math.random() - 0.5);
+            
+            // Algorithme pour respecter les contraintes
+            let maxAttempts = 10000;
+            let attempts = 0;
+            
+            while (attempts < maxAttempts) {
+                const tempAssignments = {};
+                const tempAvailable = [...availableBureaux].sort(() => Math.random() - 0.5);
+                let isValid = true;
+                
+                for (let i = 0; i < shuffledEmployees.length; i++) {
+                    const employee = shuffledEmployees[i];
+                    const bureau = tempAvailable[i];
+                    
+                    // Contrainte 1: pas son propre service
+                    if (employee.service === bureau.service) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    tempAssignments[employee.name] = bureau;
+                }
+                
+                if (isValid) {
+                    // Vérifier contrainte 2: membres d'un même service pas tous dans le même service
+                    const serviceGroups = {};
+                    employees.forEach(emp => {
+                        if (!serviceGroups[emp.service]) {
+                            serviceGroups[emp.service] = [];
+                        }
+                        serviceGroups[emp.service].push(emp);
+                    });
+                    
+                    let constraint2Valid = true;
+                    for (const [serviceName, members] of Object.entries(serviceGroups)) {
+                        if (members.length > 1) {
+                            const assignedServices = members.map(member => 
+                                tempAssignments[member.name].service
+                            );
+                            const uniqueServices = [...new Set(assignedServices)];
+                            if (uniqueServices.length === 1) {
+                                constraint2Valid = false;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (constraint2Valid) {
+                        assignments = tempAssignments;
+                        return;
+                    }
+                }
+                
+                attempts++;
+            }
+        }
+
+        function initializePage() {
+            // Générer les attributions
+            generateAssignments();
+            
+            // Remplir la liste déroulante avec seulement les noms disponibles
+            updateNameSelect();
+
+            // Activer le bouton quand un nom est sélectionné
+            document.getElementById('nameSelect').addEventListener('change', function() {
+                const discoverBtn = document.getElementById('discoverBtn');
+                discoverBtn.disabled = this.value === '';
+            });
+        }
+
+        function updateNameSelect() {
+            const nameSelect = document.getElementById('nameSelect');
+            nameSelect.innerHTML = '<option value="">-- Sélectionnez votre nom --</option>';
+            
+            employees.forEach(emp => {
+                if (!usedNames.has(emp.name)) {
+                    const option = document.createElement('option');
+                    option.value = emp.name;
+                    option.textContent = emp.name;
+                    nameSelect.appendChild(option);
+                }
+            });
+
+            // Afficher un message si tous les noms ont été utilisés
+            if (usedNames.size === employees.length) {
+                nameSelect.innerHTML = '<option value="">Tous les employés ont découvert leur bureau !</option>';
+                document.getElementById('discoverBtn').disabled = true;
+                document.getElementById('discoverBtn').textContent = '🎉 Jeu terminé !';
+            }
+        }
+
+        function startDiscovery() {
+            const selectedName = document.getElementById('nameSelect').value;
+            if (!selectedName || usedNames.has(selectedName)) return;
+
+            // Marquer ce nom comme utilisé
+            usedNames.add(selectedName);
+
+            // Masquer l'écran de bienvenue
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('animationScreen').style.display = 'block';
+
+            // Démarrer l'animation de tirage
+            animateSlotMachine(selectedName);
+        }
+
+        function animateSlotMachine(selectedName) {
+            const slotDisplay = document.getElementById('slotDisplay');
+            const allNames = employees.map(emp => emp.name);
+            let animationCount = 0;
+            const maxAnimations = 30;
+
+            slotDisplay.classList.add('spinning');
+
+            const animationInterval = setInterval(() => {
+                const randomName = allNames[Math.floor(Math.random() * allNames.length)];
+                const randomEmployee = employees.find(emp => emp.name === randomName);
+                slotDisplay.innerHTML = `${randomName}<br><small>${randomEmployee.service}</small>`;
+                
+                animationCount++;
+                
+                if (animationCount >= maxAnimations) {
+                    clearInterval(animationInterval);
+                    slotDisplay.classList.remove('spinning');
+                    
+                    // Afficher le résultat final
+                    setTimeout(() => {
+                        showResult(selectedName);
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        function showResult(selectedName) {
+            const assignedBureau = assignments[selectedName];
+            
+            // Masquer l'écran d'animation
+            document.getElementById('animationScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            
+            // Afficher le résultat
+            document.getElementById('assignedBureau').textContent = assignedBureau.name;
+            document.getElementById('assignedService').textContent = `Service: ${assignedBureau.service} - ${assignedBureau.poste}`;
+            
+            // Ajouter des confettis
+            createConfetti();
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        function restart() {
+            // Réinitialiser tous les écrans
+            document.getElementById('welcomeScreen').style.display = 'block';
+            document.getElementById('animationScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'none';
+            
+            // Mettre à jour la liste déroulante (sans les noms déjà utilisés)
+            updateNameSelect();
+            
+            // Réinitialiser le bouton si pas encore terminé
+            if (usedNames.size < employees.length) {
+                document.getElementById('discoverBtn').disabled = true;
+                document.getElementById('discoverBtn').textContent = '🚀 Découvrir mon bureau !';
+            }
+        }
+
+        // Initialiser la page au chargement
+        window.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>
